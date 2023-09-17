@@ -5,12 +5,12 @@ import (
 	"fmt"
 )
 
-type PriceChecker interface {
-	CheckPrice(context.Context, string) (float64, error)
+type PriceFinder interface {
+	FindPrice(context.Context, string) (float64, error)
 }
 
-type priceChecker struct {
-	m MockPriceChecker
+type priceFinder struct {
+	m MockPriceFinder
 }
 
 var prices = map[string]float64{
@@ -18,14 +18,14 @@ var prices = map[string]float64{
 	"BTC": 20_000,
 }
 
-func (s *priceChecker) CheckPrice(ctx context.Context, key string) (float64, error) {
-	return s.m.CheckPrice(ctx, key)
+func (s *priceFinder) FindPrice(ctx context.Context, key string) (float64, error) {
+	return s.m.FindPrice(ctx, key)
 }
 
-type MockPriceChecker struct {
+type MockPriceFinder struct {
 }
 
-func (m *MockPriceChecker) CheckPrice(ctx context.Context, key string) (float64, error) {
+func (m *MockPriceFinder) FindPrice(ctx context.Context, key string) (float64, error) {
 	if price, ok := prices[key]; ok {
 		return price, nil
 	}
