@@ -1,9 +1,70 @@
 package main
 
-type server struct {
-	svc PriceFinder
+import (
+	"context"
+	"encoding/json"
+	"log"
+	"net/http"
+
+	"github.com/aftab-hussain-93/crypto-price-finder-microservice/types"
+)
+
+type JSONAPIServer struct {
+	svc  PriceFinder
+	addr string
 }
 
-func NewTransport() *server {
-	return &server{}
+func NewJSONAPIServer(add string, svc PriceFinder) *JSONAPIServer {
+	return &JSONAPIServer{
+		addr: add,
+		svc:  svc,
+	}
+}
+
+func (s *JSONAPIServer) Run() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", makeErrorHandler(s.handleFindPrice))
+
+	err := http.ListenAndServe(s.addr, mux)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (s *JSONAPIServer) handleFindPrice(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	key := r.URL.Query().Get("ticker")
+
+	price, err := s.svc.FindPrice(ctx, key)
+	if err != nil {
+		return err
+	}
+
+	return writeJSON(w, http.StatusOK, &types.FindPriceResponse{
+		Price:  price,
+		Ticker: key,
+	})
+}
+
+type ReqID string
+
+func makeErrorHandler(fn func(context.Context, http.ResponseWriter, *http.Request) error) http.HandlerFunc {
+	ctx := context.Background()
+	rid := ReqID("requestID")
+	ctx = context.WithValue(ctx, rid, 10001)
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := fn(ctx, w, r)
+		if err != nil {
+			err := writeJSON(w, 400, map[string]any{"error": err.Error()})
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				// w.Write([]byte(`Internal server error`))
+			}
+		}
+	}
+}
+
+func writeJSON(w http.ResponseWriter, status int, body any) error {
+	w.WriteHeader(status)
+	return json.NewEncoder(w).Encode(body)
 }

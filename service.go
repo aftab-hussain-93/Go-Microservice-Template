@@ -10,7 +10,7 @@ type PriceFinder interface {
 }
 
 type priceFinder struct {
-	m MockPriceFinder
+	m *mockPriceFinder
 }
 
 var prices = map[string]float64{
@@ -22,10 +22,10 @@ func (s *priceFinder) FindPrice(ctx context.Context, key string) (float64, error
 	return s.m.FindPrice(ctx, key)
 }
 
-type MockPriceFinder struct {
+type mockPriceFinder struct {
 }
 
-func (m *MockPriceFinder) FindPrice(ctx context.Context, key string) (float64, error) {
+func (m *mockPriceFinder) FindPrice(ctx context.Context, key string) (float64, error) {
 	if price, ok := prices[key]; ok {
 		return price, nil
 	}

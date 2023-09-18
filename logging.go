@@ -18,7 +18,7 @@ func NewLogger(next PriceFinder) PriceFinder {
 
 func (l *logger) FindPrice(ctx context.Context, key string) (price float64, err error) {
 	defer func(begin time.Time) {
-		slog.Info("FindPrice", slog.Duration("latency", time.Since(begin)), slog.Float64("price", price), slog.String("err", err.Error()))
+		slog.Info("FindPrice", slog.Duration("latency", time.Since(begin)), slog.Float64("price", price), slog.Any("err", err))
 	}(time.Now())
 
 	return l.next.FindPrice(ctx, key)

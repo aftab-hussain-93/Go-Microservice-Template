@@ -1,21 +1,19 @@
 package main
 
-import (
-	"context"
-	"fmt"
-	"log"
-)
-
 func main() {
-	pc := &priceFinder{}
-	lg := NewLogger(pc)
-
-	cl := NewMetric(lg)
-
-	price, err := cl.FindPrice(context.Background(), "GHT")
-	if err != nil {
-		log.Fatal(err)
+	pc := &priceFinder{
+		m: &mockPriceFinder{},
 	}
+	svc := NewMetric(NewLogger(pc))
 
-	fmt.Println(price)
+	server := NewJSONAPIServer(":3000", svc)
+
+	server.Run()
+
+	// price, err := svc.FindPrice(context.Background(), "GHT")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// fmt.Println(price)
 }
