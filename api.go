@@ -48,17 +48,15 @@ func (s *JSONAPIServer) handleFindPrice(ctx context.Context, w http.ResponseWrit
 type ReqID string
 
 func makeErrorHandler(fn func(context.Context, http.ResponseWriter, *http.Request) error) http.HandlerFunc {
-	ctx := context.Background()
-	rid := ReqID("requestID")
-	ctx = context.WithValue(ctx, rid, 10001)
-
 	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, ReqID("requestID"), 10001)
 		err := fn(ctx, w, r)
 		if err != nil {
 			err := writeJSON(w, 400, map[string]any{"error": err.Error()})
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				// w.Write([]byte(`Internal server error`))
+				_, _ = w.Write([]byte(`Internal server error`))
 			}
 		}
 	}
