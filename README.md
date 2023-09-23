@@ -2,6 +2,11 @@
 
 A production ready microservice that can be used to fetch the price of a particular crypto currency. Comes baked with unit tests, EFK, prometheus support, e2e tests and a robust CI-CD pipeline using Github Actions.
 
+# setup
+
+- husky needs to be installed (https://github.com/go-courier/husky)
+- golangci-lint needs to be installed (https://github.com/golangci/golangci-lint)
+
 # todo
 
 - Support input and output coin

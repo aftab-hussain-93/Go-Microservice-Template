@@ -1,12 +1,8 @@
 hooks:
-  # hook scripts
-  # - golangci-lint run
   pre-commit:
-    # - golangci-lint run
     - husky lint-staged
     - golangci-lint run ./...
     - make build
-    # - go test -v ./...
   pre-push:
     - husky lint-staged
     - make build
@@ -20,9 +16,4 @@ lint-staged:
 
 # commit msg rule only support conventional commits
 lint-commit:
-  # could check if this exists
-  # email: "^(.+@.com)$"
-  # optional custom types check regex
   types: "^(feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test)$"
-  # optional header check regex
-  # header: "^(?P<type>\w+)(\((?P<scope>[\w/.-]+)\))?(?P<breaking>!)?:( +)?(?P<header>.+)"
