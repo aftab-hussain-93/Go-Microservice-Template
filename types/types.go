@@ -1,6 +1,6 @@
 package types
 
 type FindPriceResponse struct {
-	Price  float64 `json:"price"`
-	Ticker string  `json:"ticker"`
+	Price float64 `json:"price"`
+	Coin  string  `json:"coin"`
 }

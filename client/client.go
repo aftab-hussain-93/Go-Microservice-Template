@@ -20,7 +20,7 @@ func NewClient(url string) *Client {
 }
 
 func (c *Client) FindPrice(ctx context.Context, key string) (*types.FindPriceResponse, error) {
-	resp, err := http.Get(c.url + "?ticker=" + key)
+	resp, err := http.Get(c.url + "?coin=" + key)
 	if err != nil {
 		return nil, err
 	}

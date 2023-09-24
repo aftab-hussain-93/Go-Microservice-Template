@@ -5,6 +5,13 @@ import (
 	"fmt"
 )
 
+type ContextKey string
+
+const (
+	UsrCtxKey ContextKey = "user" // Logged in user
+	RequestID ContextKey = "requestID"
+)
+
 type PriceFinder interface {
 	FindPrice(context.Context, string) (float64, error)
 }
