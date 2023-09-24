@@ -4,8 +4,8 @@ func main() {
 	pc := &priceFinder{
 		m: &mockPriceFinder{},
 	}
-	svc := NewMetric(NewLoggingWrapper(pc))
-	cfg := JSONAPIServerConf{
+	svc := NewLoggingWrapper(pc)
+	cfg := &JSONAPIServerConf{
 		Debug:   true,
 		Address: ":3000",
 	}
