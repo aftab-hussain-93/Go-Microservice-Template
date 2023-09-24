@@ -6,17 +6,17 @@ import (
 	"time"
 )
 
-type logger struct {
+type lgr struct {
 	next PriceFinder
 }
 
-func NewLogger(next PriceFinder) PriceFinder {
-	return &logger{
+func NewLoggingWrapper(next PriceFinder) PriceFinder {
+	return &lgr{
 		next: next,
 	}
 }
 
-func (l *logger) FindPrice(ctx context.Context, key string) (price float64, err error) {
+func (l *lgr) FindPrice(ctx context.Context, key string) (price float64, err error) {
 	defer func(begin time.Time) {
 		slog.Info(
 			"FindPrice",

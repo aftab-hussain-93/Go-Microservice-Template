@@ -4,16 +4,13 @@ func main() {
 	pc := &priceFinder{
 		m: &mockPriceFinder{},
 	}
-	svc := NewMetric(NewLogger(pc))
+	svc := NewMetric(NewLoggingWrapper(pc))
+	cfg := JSONAPIServerConf{
+		Debug:   true,
+		Address: ":3000",
+	}
 
-	server := NewJSONAPIServer(":3000", svc)
+	server := NewJSONAPIServer(cfg, svc)
 
 	server.Run()
-
-	// price, err := svc.FindPrice(context.Background(), "GHT")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// fmt.Println(price)
 }

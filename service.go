@@ -10,6 +10,8 @@ type ContextKey string
 const (
 	UsrCtxKey ContextKey = "user" // Logged in user
 	RequestID ContextKey = "requestID"
+	Operation ContextKey = "operation"
+	Service   ContextKey = "service"
 )
 
 type PriceFinder interface {
