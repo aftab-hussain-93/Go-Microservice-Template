@@ -40,7 +40,7 @@ func (s *JSONAPIServer) Run() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/swagger", s.handleAPIDoc)
 
-	mux.HandleFunc("/api/v1/prices/", s.makeErrorHandler(s.handleFindPrice))
+	mux.HandleFunc("/api/v1/prices/", TimeoutMW(s.makeErrorHandler(s.handleFindPrice), time.Second))
 
 	srv := http.Server{
 		Addr:         s.getAddr(),
