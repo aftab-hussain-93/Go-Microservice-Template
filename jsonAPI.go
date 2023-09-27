@@ -65,7 +65,7 @@ func (s *JSONAPIServer) Run() {
 	select {
 	case q := <-quit:
 		// terminate called
-		slog.Error("interrup received, shutting down server", q)
+		slog.Error("interrupt received, shutting down server", q)
 	case <-done:
 		// server errored out
 	}
