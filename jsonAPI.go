@@ -21,12 +21,23 @@ type JSONAPIServer struct {
 }
 
 type JSONAPIServerConf struct {
-	Debug   bool
-	Address string
+	Debug          bool
+	Address        string
+	WriteTimeout   time.Duration
+	ReadTimeout    time.Duration
+	HandlerTimeout time.Duration //
 }
 
 func (s *JSONAPIServer) getAddr() string {
 	return s.cfg.Address
+}
+
+func (s *JSONAPIServer) getReadTimeout() time.Duration {
+	return s.cfg.ReadTimeout
+}
+
+func (s *JSONAPIServer) getWriteTimeout() time.Duration {
+	return s.cfg.WriteTimeout
 }
 
 func NewJSONAPIServer(cfg *JSONAPIServerConf, svc PriceFinder) *JSONAPIServer {
@@ -40,14 +51,14 @@ func (s *JSONAPIServer) Run() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/swagger", s.handleAPIDoc)
 
-	mux.HandleFunc("/api/v1/prices/", TimeoutMW(s.makeErrorHandler(s.handleFindPrice), time.Second))
+	mux.HandleFunc("/api/v1/prices/", TimeoutAndPanicMW(s.makeErrorHandler(s.handleFindPrice), s.cfg.HandlerTimeout))
 
 	srv := http.Server{
 		Addr:         s.getAddr(),
 		ErrorLog:     log.Default(), // Integrate with slog and write to specific out
 		Handler:      mux,
-		ReadTimeout:  5 * time.Second, // default values
-		WriteTimeout: 5 * time.Second, // default values
+		ReadTimeout:  s.getReadTimeout(),  // default values
+		WriteTimeout: s.getWriteTimeout(), // default values
 	}
 	done := make(chan struct{})
 	quit := make(chan os.Signal, 1)
@@ -85,6 +96,7 @@ func (s *JSONAPIServer) handleAPIDoc(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *JSONAPIServer) handleFindPrice(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	time.Sleep(2 * time.Second)
 	escapedPath := strings.TrimSpace(strings.TrimPrefix(r.URL.EscapedPath(), "/api/v1/prices/"))
 	path := strings.SplitN(escapedPath, "/", 1)
 	coin := path[0]
@@ -106,7 +118,7 @@ func (s *JSONAPIServer) makeErrorHandler(fn func(context.Context, http.ResponseW
 		slog.InfoContext(ctx, "Request received", slog.Any("path", r.URL.Path))
 		err := fn(ctx, w, r)
 		if err != nil {
-			status, jsonErr := s.errorHandler(ctx, err)
+			status, jsonErr := convertErrToErrResponse(ctx, err)
 			err := writeJSON(w, status, jsonErr)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)

@@ -14,6 +14,7 @@ const (
 	ErrUnAuthenticated errCode = "NOT_FOUND"
 	ErrForbidden       errCode = "FORBIDDEN"
 	ErrInternal        errCode = "INTERNAL"
+	ErrTimeout         errCode = "TIMEOUT"
 )
 
 var errToHTTPStatus = map[errCode]int{
@@ -21,6 +22,7 @@ var errToHTTPStatus = map[errCode]int{
 	ErrUnAuthenticated: http.StatusUnauthorized,
 	ErrForbidden:       http.StatusForbidden,
 	ErrInternal:        http.StatusInternalServerError,
+	ErrTimeout:         http.StatusRequestTimeout,
 }
 
 type Err struct {

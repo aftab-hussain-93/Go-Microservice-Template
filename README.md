@@ -6,6 +6,7 @@ A production ready microservice that can be used to fetch the price of a particu
 
 - husky needs to be installed (https://github.com/go-courier/husky)
 - golangci-lint needs to be installed (https://github.com/golangci/golangci-lint)
+- go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.54.2
 
 # todo
 

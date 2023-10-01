@@ -2,10 +2,10 @@ hooks:
   pre-commit:
     - husky lint-staged
     - golangci-lint run ./...
-    - make build
+    - go build -o ./bin/pricefinder .
   pre-push:
     - husky lint-staged
-    - make build
+    - go build -o ./bin/pricefinder .
   commit-msg:
     - husky lint-commit
 

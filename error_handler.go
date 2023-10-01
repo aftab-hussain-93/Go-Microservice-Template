@@ -10,7 +10,7 @@ import (
 	"github.com/aftab-hussain-93/crypto-price-finder-microservice/types"
 )
 
-func (s *JSONAPIServer) errorHandler(ctx context.Context, e error) (status int, res types.ErrResponse) {
+func convertErrToErrResponse(ctx context.Context, e error) (status int, res types.ErrResponse) {
 	if op := ctx.Value(Operation); op != nil {
 		res.Operation = op.(string)
 	}
