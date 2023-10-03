@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"log/slog"
 	"math/rand"
@@ -26,6 +27,11 @@ type JSONAPIServerConf struct {
 	WriteTimeout   time.Duration
 	ReadTimeout    time.Duration
 	HandlerTimeout time.Duration //
+}
+
+func writeJSON(w http.ResponseWriter, status int, body any) error {
+	w.Header().Add("Content-Type", "application/json")
+	return json.NewEncoder(w).Encode(body)
 }
 
 func (s *JSONAPIServer) getAddr() string {
