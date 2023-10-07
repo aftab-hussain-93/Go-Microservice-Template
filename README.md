@@ -11,11 +11,9 @@ A production ready microservice that can be used to fetch the price of a particu
 # todo
 
 - Support input and output coin
-- Add timeout middleware, panic recovery middleware, authentication middleware, rate limiting middleware based on IP address
 - Setup graceful shutdown, add time outs for http server, go through the http server struct for more features
 - Add e2e tests with new environment, create dummy coin provider server
 - Add config for debug mode, coin base URL, coin base credentials, redis URL, app environment
-- Add centralized logger
 - Use luna client for http requests
 - Use HTTP request coalescing in Luna client
 - Use kafka for logging
@@ -26,3 +24,5 @@ A production ready microservice that can be used to fetch the price of a particu
 # completed
 
 - custom error handler
+- Add timeout middleware, panic recovery middleware, authentication middleware, rate limiting middleware based on IP address
+- Add centralized logger

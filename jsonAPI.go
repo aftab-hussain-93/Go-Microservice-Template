@@ -53,6 +53,7 @@ func NewJSONAPIServer(cfg *JSONAPIServerConf, svc PriceFinder) *JSONAPIServer {
 	}
 }
 
+// Function to create mux and set up http server
 func (s *JSONAPIServer) Run() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/swagger", s.handleAPIDoc)

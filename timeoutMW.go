@@ -10,38 +10,6 @@ import (
 	err "github.com/aftab-hussain-93/crypto-price-finder-microservice/error"
 )
 
-type responseWriter struct {
-	w  http.ResponseWriter
-	mu sync.Mutex
-
-	bodyWritten   bool
-	headerWritten bool
-}
-
-func (r *responseWriter) Header() http.Header {
-	return r.w.Header()
-}
-
-func (r *responseWriter) Write(ip []byte) (int, error) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if !r.bodyWritten {
-		n, err := r.w.Write(ip)
-		r.bodyWritten = true
-		return n, err
-	}
-	return 0, nil
-}
-
-func (r *responseWriter) WriteHeader(statusCode int) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if !r.headerWritten {
-		r.w.WriteHeader(statusCode)
-		r.headerWritten = true
-	}
-}
-
 func TimeoutAndPanicMW(fn http.HandlerFunc, timeout time.Duration) http.HandlerFunc {
 	timeoutErr := err.Err{
 		Code:    err.ErrTimeout,
@@ -82,5 +50,37 @@ func TimeoutAndPanicMW(fn http.HandlerFunc, timeout time.Duration) http.HandlerF
 		case <-doneChan:
 			// already written
 		}
+	}
+}
+
+type responseWriter struct {
+	w  http.ResponseWriter
+	mu sync.Mutex
+
+	bodyWritten   bool
+	headerWritten bool
+}
+
+func (r *responseWriter) Header() http.Header {
+	return r.w.Header()
+}
+
+func (r *responseWriter) Write(ip []byte) (int, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if !r.bodyWritten {
+		n, err := r.w.Write(ip)
+		r.bodyWritten = true
+		return n, err
+	}
+	return 0, nil
+}
+
+func (r *responseWriter) WriteHeader(statusCode int) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if !r.headerWritten {
+		r.w.WriteHeader(statusCode)
+		r.headerWritten = true
 	}
 }
