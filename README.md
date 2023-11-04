@@ -20,6 +20,9 @@ A production ready microservice that can be used to fetch the price of a particu
 - Implement Open API spec
 - Implement GRPC
 - Add persistance for rate limiting based on incoming IP address, logged in user data etc.
+- deploy on docker and run it behind nginx
+- setup response headers such as cors in reverse proxy
+- push reverse proxy logs to kibana
 
 # completed
 
