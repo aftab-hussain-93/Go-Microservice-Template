@@ -56,7 +56,6 @@ func NewJSONAPIServer(cfg *JSONAPIServerConf, svc PriceFinder) *JSONAPIServer {
 // Function to create mux and set up http server
 func (s *JSONAPIServer) Run() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/swagger", s.handleAPIDoc)
 
 	mux.HandleFunc("/api/v1/prices/", TimeoutAndPanicMW(s.makeErrorHandler(s.handleFindPrice), s.cfg.HandlerTimeout))
 
@@ -97,13 +96,7 @@ func (s *JSONAPIServer) Run() {
 	}
 }
 
-func (s *JSONAPIServer) handleAPIDoc(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte(`Hello World!`))
-}
-
 func (s *JSONAPIServer) handleFindPrice(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	time.Sleep(2 * time.Second)
 	escapedPath := strings.TrimSpace(strings.TrimPrefix(r.URL.EscapedPath(), "/api/v1/prices/"))
 	path := strings.SplitN(escapedPath, "/", 1)
 	coin := path[0]
